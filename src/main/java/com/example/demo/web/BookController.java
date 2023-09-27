@@ -2,6 +2,8 @@ package com.example.demo.web;
 
 import com.example.demo.domain.Book;
 import com.example.demo.domain.BookstoreRepo;
+import com.example.demo.domain.Category;
+import com.example.demo.domain.CategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,9 @@ public class BookController {
     @Autowired
     private BookstoreRepo bookStoreRepo;
 
+    @Autowired
+    private CategoryRepo categoryRepo; 
+
     @GetMapping("/bookstore")
     public String bookList(Model model) {
         List<Book> books = (List<Book>) bookStoreRepo.findAll();
@@ -22,13 +27,15 @@ public class BookController {
         return "bookstore";
     }
 
-    @GetMapping("/addbook")
+    @GetMapping("/add")
     public String addBookForm(Model model) {
         model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepo.findAll());
+
         return "addbook";
     }
 
-    @PostMapping("/addbook")
+    @PostMapping("/save")
     public String addBookSubmit(@ModelAttribute Book book) {
         bookStoreRepo.save(book);
         return "redirect:/bookstore";
@@ -40,4 +47,5 @@ public class BookController {
         return "redirect:/bookstore";
     }
 }
+
 
