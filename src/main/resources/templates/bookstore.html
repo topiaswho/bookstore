@@ -1,13 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <title>Bookstore</title>
 </head>
 <body>
-    <h1>Welcome to the bookstore!</h1>
+    <h1>Welcome to the bookstore, <span sec:authentication="name"></span>!</h1>
     <a th:href="@{/add}">Add a New Book</a>
     <a th:href="@{/categorylist}">Categories</a>
-<table>
+    
+    <!-- Add a logout link -->
+    <a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+    
+    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+        <!-- This hidden form is used to trigger the logout process -->
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    </form>
+
+    <table>
         <thead>
             <tr>
                 <th>Title</th>
@@ -25,8 +34,9 @@
                 <td th:text="${book.year}"></td>
                 <td th:text="${book.isbn}"></td>
                 <td th:text="${book.price}"></td>
-      <td th:text="${book.category.name}"></td>
-                <td><a th:href="@{/delete/{id}(id=${book.id})}">Delete</a></td>
+                <td th:text="${book.category.name}"></td>
+                <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
             </tr>
         </tbody>
     </table>
