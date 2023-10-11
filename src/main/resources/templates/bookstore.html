@@ -8,7 +8,7 @@
     <a th:href="@{/add}">Add a New Book</a>
     <a th:href="@{/categorylist}">Categories</a>
     
-    <!-- Add a logout link -->
+    <!-- logout link -->
     <a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
     
     <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
@@ -25,6 +25,7 @@
                 <th>ISBN</th>
                 <th>Price</th>
                 <th>Category</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -35,8 +36,9 @@
                 <td th:text="${book.isbn}"></td>
                 <td th:text="${book.price}"></td>
                 <td th:text="${book.category.name}"></td>
-                <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-        <a th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
+                <td sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-xs btn-danger">Delete</a>
+                </td>
             </tr>
         </tbody>
     </table>
